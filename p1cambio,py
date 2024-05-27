@@ -1,0 +1,37 @@
+class Transmetro:
+    def _init_(self):
+        self.estaciones = {51: "Estación Javier", 61: "Estación Trébol", 71: "Estación Don Bosco", 82: "Estación Plaza Municipal"}
+        self.rutas = {(51, 61): 39, (51, 71): 18, (51, 82): 23, (61, 82): 8, (82, 51): 42}
+        self.boletos_vendidos, self.ingresos = {}, 0
+
+    def mostrar_estaciones(self):
+        print("Estaciones vigentes:", *[f"{codigo}: {nombre}" for codigo, nombre in self.estaciones.items()], sep="\n")
+
+    def comprar_boleto(self):
+        partida, destino = int(input("Estación de partida: ")), int(input("Estación de destino: "))
+        if (partida, destino) not in self.rutas:
+            print("Ruta no existe."); return
+
+        nombre, edad, embarazada = input("Nombre: "), int(input("Edad: ")), input("¿Está embarazada? (si o no): ").lower() == 's'
+        distancia, precio = self.rutas[(partida, destino)], 1.50
+        if distancia > 8: precio += (distancia - 8) * 0.25
+        if embarazada: precio = 0
+        elif 15 <= edad <= 25: precio *= 0.75
+
+        print(f"Detalles del boleto:Estación de partida: {self.estaciones[partida]}\nEstación de destino: {self.estaciones[destino]}\nPrecio del boleto: Q{precio}\nTiempo estimado de viaje: {distancia/20:.2f} horas")
+        self.boletos_vendidos[(partida, destino)] = self.boletos_vendidos.get((partida, destino), 0) + 1
+        self.ingresos += precio
+
+    def mostrar_reportes(self):
+        print("Reportes:", *[f"Ruta {self.estaciones[ruta[0]]} - {self.estaciones[ruta[1]]}: {cantidad} boletos" for ruta, cantidad in self.boletos_vendidos.items()], f"Total de ingresos: Q{self.ingresos}", sep="\n")
+
+    def ejecutar(self):
+        opciones = {"1": self.mostrar_estaciones, "2": self.comprar_boleto, "3": self.mostrar_reportes}
+        while True:
+            opcion = input("\nMenú:\n1. Ver las estaciones existentes\n2. Comprar boleto\n3. Reportes\n4. Salir\nSeleccione una opción: ")
+            if opcion == "4": print("¡Gracias por utilizar el sistema de Transmetro!"); break
+            opciones.get(opcion, lambda: print("Opción no válida."))()
+
+# Inicializar y ejecutar el programa
+transmetro = Transmetro()
+transmetro.ejecutar()
